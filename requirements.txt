@@ -14,3 +14,4 @@ xlsxwriter>=3.2.5
 fpdf2>=2.8.0
 email-validator>=2.2.0
 psycopg2-binary>=2.9.10
+serverless-wsgi>=2.0.0
