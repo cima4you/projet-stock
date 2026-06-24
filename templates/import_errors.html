@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.import_errors_title }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                    {{ translations.import_errors_title }}
+                </h1>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    {{ translations.back_to_products }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {% if errors %}
+                    <div class="alert alert-warning" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>
+                            {{ translations.import_results }}
+                        </h5>
+                        <p class="mb-0">
+                            L'importation s'est terminée avec {{ errors|length }} erreur(s). 
+                            Veuillez vérifier les détails ci-dessous et corriger les données dans votre fichier Excel si nécessaire.
+                        </p>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-warning">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Description de l'erreur</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for error in errors %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ error }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h5>{{ translations.no_import_errors }}</h5>
+                        <p class="text-muted">L'importation s'est déroulée sans erreur.</p>
+                        <a href="{{ url_for('products') }}" class="btn btn-success">
+                            <i class="fas fa-eye me-2"></i>
+                            {{ translations.view }} {{ translations.products|lower }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produit supprimé du stock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #dc3545;
+        }
+        .header h1 {
+            color: #dc3545;
+            margin: 0;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .product-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #dc3545;
+            margin: 20px 0;
+        }
+        .product-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .product-info td {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .product-info td:first-child {
+            font-weight: bold;
+            width: 40%;
+            color: #495057;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .alert {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗑️ Produit supprimé du stock</h1>
+            <p>Notification automatique - Système de Gestion de Stock</p>
+        </div>
+        
+        <div class="content">
+            <div class="alert">
+                <strong>⚠️ Attention :</strong> Un produit a été supprimé du système de gestion de stock.
+            </div>
+            
+            <p>Bonjour,</p>
+            
+            <p>Nous vous informons qu'un produit a été supprimé du système de gestion de stock. Voici les détails :</p>
+            
+            <div class="product-info">
+                <h3 style="margin-top: 0; color: #dc3545;">📦 Informations du produit supprimé</h3>
+                <table>
+                    <tr>
+                        <td>Nom du produit :</td>
+                        <td><strong>{product_name}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Code produit :</td>
+                        <td><strong>{product_code}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Supprimé par :</td>
+                        <td>{deleted_by}</td>
+                    </tr>
+                    <tr>
+                        <td>Date de suppression :</td>
+                        <td>{deletion_date}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <p><strong>Action recommandée :</strong></p>
+            <ul>
+                <li>Vérifiez si cette suppression était intentionnelle</li>
+                <li>Documentez la raison de la suppression si nécessaire</li>
+                <li>Vérifiez l'impact sur les autres processus</li>
+                <li>Contactez l'utilisateur responsable si des clarifications sont nécessaires</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Ceci est une notification automatique générée par le système de gestion de stock.</p>
+            <p>Si vous ne souhaitez plus recevoir ces notifications, veuillez contacter votre administrateur.</p>
+            <p>© Système de Gestion de Stock - Notification de suppression de produit</p>
+        </div>
+    </div>
+</body>
+</html>

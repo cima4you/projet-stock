@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.logo_management }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">
+                <i class="fas fa-image me-2"></i>
+                {{ translations.logo_management }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Current Logo -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-eye me-2"></i>
+                        {{ translations.current_logo }}
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    {% if logo_exists %}
+                    <div class="mb-3">
+                        <img src="{{ url_for('get_logo') }}?{{ range(1, 10000)|random }}" alt="Logo actuel" class="img-fluid" style="max-height: 200px; border: 1px solid #dee2e6; border-radius: 8px;">
+                    </div>
+                    <p class="text-success">
+                        <i class="fas fa-check-circle me-1"></i>
+                        Logo configuré
+                    </p>
+                    {% else %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-center">
+                            <div class="placeholder-logo" style="width: 200px; height: 100px; border: 2px dashed #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                                <i class="fas fa-image fa-2x text-muted"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        {{ translations.no_logo_uploaded }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Upload New Logo -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-upload me-2"></i>
+                        {{ translations.upload_new_logo }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="logo_file" class="form-label">{{ translations.select_logo_file }} *</label>
+                            <input type="file" class="form-control" id="logo_file" name="logo_file" accept=".png,.jpg,.jpeg" required>
+                            <div class="form-text">
+                                {{ translations.supported_logo_formats }}<br>
+                                {{ translations.max_file_size }}
+                            </div>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="mb-3" id="preview-container" style="display: none;">
+                            <label class="form-label">Aperçu:</label>
+                            <div class="text-center">
+                                <img id="logo-preview" src="" alt="Aperçu" class="img-fluid" style="max-height: 200px; border: 1px solid #dee2e6; border-radius: 8px;">
+                            </div>
+                        </div>
+
+                        <!-- Upload Instructions -->
+                        <div class="alert alert-info" role="alert">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Instructions
+                            </h6>
+                            <ul class="mb-0">
+                                <li>L'image sera automatiquement redimensionnée si elle dépasse 500x500 pixels</li>
+                                <li>Les formats PNG, JPG et JPEG sont supportés</li>
+                                <li>Le logo apparaîtra dans la barre de navigation</li>
+                                <li>Pour de meilleurs résultats, utilisez une image avec un fond transparent (PNG)</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>
+                                {{ translations.upload }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('logo_file').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('logo-preview');
+            const container = document.getElementById('preview-container');
+            
+            preview.src = e.target.result;
+            container.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById('preview-container').style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

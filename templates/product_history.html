@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Historique - {{ product[1] }} {{ product[2] }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-history me-2"></i>
+                    Historique: <strong>{{ product[1] }}</strong> - {{ product[2] }}
+                </h1>
+                <div>
+                    <span class="badge bg-primary fs-6 me-2">Stock: {{ product[5] }}</span>
+                    <a href="{{ url_for('products') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Info Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h6>Catégorie</h6>
+                    <p class="mb-0">{{ product[3] or '-' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h6>Fournisseur</h6>
+                    <p class="mb-0">{{ product[11] or '-' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h6>Stock min</h6>
+                    <p class="mb-0">{{ product[18] or 0 }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h6>Zone</h6>
+                    <p class="mb-0">{{ product[9] or '-' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Evolution Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Évolution du stock</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="stockChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {% if movements %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Quantité</th>
+                                    <th>Utilisateur</th>
+                                    <th>Fournisseur</th>
+                                    <th>Type d'Achat</th>
+                                    <th>BC</th>
+                                    <th>BL</th>
+                                    <th>Facture</th>
+                                    <th>Chantier</th>
+                                    <th>Donneur d'ordre</th>
+                                    <th>Magasinier</th>
+                                    <th>Chauffeur</th>
+                                    <th>Matricule</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in movements %}
+                                <tr>
+                                    <td>{{ m[4]|string if m[4] else '-' }}</td>
+                                    <td>
+                                        {% if m[1] == 'entry' %}
+                                            <span class="badge bg-success">Entrée</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Sortie</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><strong>{{ m[2] }}</strong></td>
+                                    <td>{{ m[7] }}</td>
+                                    <td>{{ m[8] or '-' }}</td>
+                                    <td>{{ m[12] or '-' }}</td>
+                                    <td>{{ m[9] or '-' }}</td>
+                                    <td>{{ m[10] or '-' }}</td>
+                                    <td>{{ m[11] or '-' }}</td>
+                                    <td>{{ m[13] or '-' }}</td>
+                                    <td>{{ m[14] or '-' }}</td>
+                                    <td>{{ m[15] or '-' }}</td>
+                                    <td>{{ m[16] or '-' }}</td>
+                                    <td>{{ m[17] or '-' }}</td>
+                                    <td><small>{{ m[3] or '-' }}</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                        <h5>Aucun mouvement pour ce produit</h5>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+var labels = {{ stock_labels | safe }};
+var data = {{ stock_data | safe }};
+var minQty = {{ min_qty }};
+
+if (labels.length > 0) {
+    var ctx = document.getElementById('stockChart').getContext('2d');
+    var datasets = [{
+        label: 'Stock',
+        data: data,
+        borderColor: '#4e73df',
+        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+        pointBackgroundColor: '#4e73df'
+    }];
+    if (minQty > 0) {
+        datasets.push({
+            label: 'Stock min (' + minQty + ')',
+            data: Array(labels.length).fill(minQty),
+            borderColor: '#e74a3b',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            fill: false,
+            pointRadius: 0,
+            pointHoverRadius: 0
+        });
+    }
+    new Chart(ctx, {
+        type: 'line',
+        data: { labels: labels, datasets: datasets },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            if (ctx.datasetIndex === 1) return 'Seuil min: ' + ctx.parsed.y;
+                            return 'Stock: ' + ctx.parsed.y;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: 'Quantité' } },
+                x: { title: { display: true, text: 'Date' } }
+            }
+        }
+    });
+} else {
+    document.getElementById('stockChart').parentElement.innerHTML =
+        '<p class="text-muted text-center py-4">Aucune donnée pour afficher le graphique</p>';
+}
+</script>
+{% endblock %}

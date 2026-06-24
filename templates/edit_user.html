@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.edit_user }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-edit me-2"></i>
+                    {{ translations.edit_user }}
+                </h1>
+                <a href="{{ url_for('users') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    {{ translations.back }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">{{ translations.username }} *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" class="form-control" id="username" name="username" value="{{ user[1] }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ translations.email }} *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user[3] }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">{{ translations.new_password }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" id="new_password" name="new_password" minlength="6">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">Laisser vide pour conserver le mot de passe actuel</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="role" class="form-label">{{ translations.role }} *</label>
+                            <select class="form-select" id="role" name="role" required {% if user[4] == 'principal_admin' %}disabled{% endif %}>
+                                <option value="">Sélectionner un rôle</option>
+                                <option value="user" {% if user[4] == 'user' %}selected{% endif %}>{{ translations.user }}</option>
+                                <option value="admin" {% if user[4] == 'admin' %}selected{% endif %}>{{ translations.admin }}</option>
+                                <option value="principal_admin" {% if user[4] == 'principal_admin' %}selected{% endif %}>{{ translations.principal_admin }}</option>
+                            </select>
+                            {% if user[4] == 'principal_admin' %}
+                            <input type="hidden" name="role" value="principal_admin">
+                            <div class="form-text text-warning">Le rôle d'administrateur principal ne peut pas être modifié</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="active" name="active" {% if user[5] %}checked{% endif %} {% if user[4] == 'principal_admin' %}disabled{% endif %}>
+                            <label class="form-check-label" for="active">
+                                {{ translations.active }}
+                            </label>
+                            {% if user[4] == 'principal_admin' %}
+                            <input type="hidden" name="active" value="1">
+                            <div class="form-text text-warning">L'administrateur principal ne peut pas être désactivé</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('users') }}" class="btn btn-secondary me-md-2">
+                                {{ translations.cancel }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {{ translations.save }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const password = document.getElementById('new_password');
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Inventaire physique{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3"><i class="fas fa-clipboard-list me-2"></i>Inventaire physique</h1>
+    </div>
+
+    <div class="row">
+        <!-- Count Form -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Nouveau comptage</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('inventory_count') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Produit</label>
+                            <select class="form-select" id="productSelect" name="product_id" required>
+                                <option value="">Sélectionner un produit...</option>
+                                {% for p in products %}
+                                <option value="{{ p[0] }}" data-qty="{{ p[3] }}">{{ p[1] }} - {{ p[2] }} (Stock: {{ p[3] }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Stock théorique actuel</label>
+                            <input type="number" class="form-control" id="theoreticalQty" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantité réelle *</label>
+                            <input type="number" class="form-control" name="actual_qty" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save me-2"></i>Enregistrer l'inventaire
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Derniers comptages</h5>
+                </div>
+                <div class="card-body">
+                    {% if counts %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Théorique</th>
+                                    <th>Réel</th>
+                                    <th>Écart</th>
+                                    <th>Compté par</th>
+                                    <th>Date</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for c in counts %}
+                                <tr class="{% if c[4] < 0 %}table-danger{% elif c[4] > 0 %}table-success{% endif %}">
+                                    <td><strong>{{ c[7] }}</strong> - {{ c[8] }}</td>
+                                    <td>{{ c[2] }}</td>
+                                    <td>{{ c[3] }}</td>
+                                    <td><strong>{{ '%+d'|format(c[4]) }}</strong></td>
+                                    <td>{{ c[5] }}</td>
+                                    <td>{{ c[6] }}</td>
+                                    <td><small>{{ c[5] or '-' }}</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">Aucun comptage effectué</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('productSelect').addEventListener('change', function() {
+    const opt = this.options[this.selectedIndex];
+    document.getElementById('theoreticalQty').value = opt ? opt.dataset.qty : '';
+});
+</script>
+{% endblock %}

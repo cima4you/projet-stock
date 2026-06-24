@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits expirant bientôt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffc107;
+        }
+        .header h1 {
+            color: #ffc107;
+            margin: 0;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .products-table th {
+            background-color: #ffc107;
+            color: #212529;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .products-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .products-table tr:hover {
+            background-color: #ffffff;
+        }
+        .urgent {
+            background-color: #f8d7da !important;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd !important;
+            color: #856404;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .alert {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stats {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Produits expirant bientôt</h1>
+            <p>Alerte automatique - Système de Gestion de Stock</p>
+        </div>
+        
+        <div class="content">
+            <div class="alert">
+                <strong>⚠️ Attention :</strong> Certains produits dans votre stock approchent de leur date d'expiration.
+            </div>
+            
+            <p>Bonjour,</p>
+            
+            <p>Notre système a détecté que <strong>{products_count}</strong> produit(s) approchent de leur date d'expiration dans les 30 prochains jours.</p>
+            
+            <div class="stats">
+                <h3 style="margin: 0; color: #495057;">📊 Résumé de l'alerte</h3>
+                <p style="margin: 10px 0;">
+                    <strong>{products_count}</strong> produits nécessitent votre attention<br>
+                    <small>Vérification effectuée le : {check_date}</small>
+                </p>
+            </div>
+            
+            <h3>📋 Liste des produits concernés :</h3>
+            
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Nom du produit</th>
+                        <th>Code</th>
+                        <th>Date d'expiration</th>
+                        <th>Jours restants</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {products_list}
+                </tbody>
+            </table>
+            
+            <div class="alert">
+                <h4 style="margin-top: 0;">🎯 Actions recommandées :</h4>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Produits expirant dans moins de 7 jours :</strong> Action immédiate requise</li>
+                    <li><strong>Produits expirant dans 7-15 jours :</strong> Planifier l'utilisation ou la vente</li>
+                    <li><strong>Produits expirant dans 15-30 jours :</strong> Surveiller et préparer les actions</li>
+                    <li>Contacter les fournisseurs si nécessaire</li>
+                    <li>Vérifier les possibilités de retour ou d'échange</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Ceci est une notification automatique générée par le système de gestion de stock.</p>
+            <p>Cette vérification est effectuée quotidiennement pour vous aider à gérer votre inventaire.</p>
+            <p>Si vous ne souhaitez plus recevoir ces notifications, veuillez contacter votre administrateur.</p>
+            <p>© Système de Gestion de Stock - Alerte d'expiration de produits</p>
+        </div>
+    </div>
+</body>
+</html>

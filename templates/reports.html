@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.reports }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">
+                <i class="fas fa-chart-bar me-2"></i>
+                {{ translations.reports }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Product Reports -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="fas fa-boxes fa-2x"></i>
+                        </div>
+                        <h4 class="card-title">{{ translations.product_reports }}</h4>
+                        <p class="card-text text-muted">{{ translations.product_reports_description }}</p>
+                    </div>
+                    
+                    <div class="list-group list-group-flush mb-4">
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Inventaire complet des produits
+                        </div>
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Filtrage par catégorie
+                        </div>
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Recherche avancée
+                        </div>
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Export Excel
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <a href="{{ url_for('product_reports') }}" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-chart-line me-2"></i>
+                            {{ translations.view }} {{ translations.product_reports }}
+                        </a>
+                        <a href="{{ url_for('export_pdf_products') }}" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-file-pdf me-2"></i>
+                            Export PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movement Reports -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                            <i class="fas fa-exchange-alt fa-2x"></i>
+                        </div>
+                        <h4 class="card-title">{{ translations.movement_reports }}</h4>
+                        <p class="card-text text-muted">{{ translations.movement_reports_description }}</p>
+                    </div>
+                    
+                    <div class="list-group list-group-flush mb-4">
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Historique des mouvements
+                        </div>
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Filtrage par date
+                        </div>
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Analyses statistiques
+                        </div>
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Export Excel
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <a href="{{ url_for('movement_reports') }}" class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            {{ translations.view }} {{ translations.movement_reports }}
+                        </a>
+                        <a href="{{ url_for('export_pdf_movements') }}" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-file-pdf me-2"></i>
+                            Export PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Aperçu rapide
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="fas fa-boxes fa-2x text-primary mb-2"></i>
+                                <h5>Produits</h5>
+                                <p class="text-muted mb-0">Gérez votre inventaire</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="fas fa-exchange-alt fa-2x text-success mb-2"></i>
+                                <h5>Mouvements</h5>
+                                <p class="text-muted mb-0">Suivez les flux</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
+                                <h5>Analyses</h5>
+                                <p class="text-muted mb-0">Insights détaillés</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border rounded p-3">
+                                <i class="fas fa-file-excel fa-2x text-warning mb-2"></i>
+                                <h5>Exports</h5>
+                                <p class="text-muted mb-0">Formats Excel</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

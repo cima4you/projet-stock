@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.products }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-boxes me-2"></i>
+                    {{ translations.products }}
+                </h1>
+                <div>
+                    <a href="{{ url_for('import_products') }}" class="btn btn-info me-2">
+                        <i class="fas fa-upload me-2"></i>
+                        {{ translations.import }}
+                    </a>
+                    <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        {{ translations.add_product }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <!-- Search -->
+                        <div class="col-md-3">
+                            <label for="search" class="form-label">{{ translations.search_products }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="search" name="search" value="{{ search_query }}" placeholder="{{ translations.search_products }}">
+                            </div>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">{{ translations.category }}</label>
+                            <input type="text" class="form-control" id="category" name="category" list="categoryList" value="{{ category_filter }}" placeholder="{{ translations.all_categories }}">
+                            <datalist id="categoryList">
+                                {% for cat in categories %}
+                                <option value="{{ cat }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+
+                        <!-- Type d'Achat -->
+                        <div class="col-md-3">
+                            <label for="type_achat" class="form-label">{{ translations.type_achat }}</label>
+                            <select class="form-select" id="type_achat" name="type_achat">
+                                <option value="">{{ translations.all_types }}</option>
+                                <option value="achat_par_bc" {% if type_achat_filter == 'achat_par_bc' %}selected{% endif %}>{{ translations.achat_par_bc }}</option>
+                                <option value="achat_par_caisse" {% if type_achat_filter == 'achat_par_caisse' %}selected{% endif %}>{{ translations.achat_par_caisse }}</option>
+                                <option value="achat_a_regulariser" {% if type_achat_filter == 'achat_a_regulariser' %}selected{% endif %}>{{ translations.achat_a_regulariser }}</option>
+                                <option value="transfert" {% if type_achat_filter == 'transfert' %}selected{% endif %}>{{ translations.transfert }}</option>
+                                <option value="consommation" {% if type_achat_filter == 'consommation' %}selected{% endif %}>Consommation interne</option>
+                                <option value="perte" {% if type_achat_filter == 'perte' %}selected{% endif %}>{{ translations.perte }}</option>
+                                <option value="vendu" {% if type_achat_filter == 'vendu' %}selected{% endif %}>{{ translations.vendu }}</option>
+                                <option value="expire" {% if type_achat_filter == 'expire' %}selected{% endif %}>{{ translations.expire }}</option>
+                             </select>
+                        </div>
+
+                        <!-- Nom Fournisseur -->
+                        <div class="col-md-3">
+                            <label for="supplier_name" class="form-label">{{ translations.supplier_name }}</label>
+                            <input type="text" class="form-control" id="supplier_name" name="supplier_name" list="supplierList" value="{{ supplier_name_filter }}" placeholder="Tous les fournisseurs">
+                            <datalist id="supplierList">
+                                {% for s in all_suppliers %}
+                                <option value="{{ s }}">
+                                {% endfor %}
+                            </datalist>
+                        </div>
+						
+						<!-- Zone de Stockage -->
+						<div class="col-md-3">
+							<label for="storage_zone" class="form-label">Zone de Stockage</label>
+							<input type="text" class="form-control" id="storage_zone" name="storage_zone" value="{{ storage_zone_filter }}" placeholder="Rechercher par zone de stockage">
+						</div>
+
+                        <!-- Brand -->
+                        <div class="col-md-3">
+                            <label for="brand" class="form-label">Marque</label>
+                            <input type="text" class="form-control" id="brand" name="brand" value="{{ brand_filter }}" placeholder="Filtrer par marque">
+                        </div>
+
+                        <!-- Date From -->
+                        <div class="col-md-3">
+                            <label for="date_from" class="form-label">Date début</label>
+                            <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+                        </div>
+
+                        <!-- Date To -->
+                        <div class="col-md-3">
+                            <label for="date_to" class="form-label">Date fin</label>
+                            <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+                        </div>
+
+                        <!-- Filter & Reset Buttons -->
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-filter me-1"></i>
+                                {{ translations.filter }}
+                            </button>
+                            <a href="{{ url_for('products') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>
+                                {{ translations.reset }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {% if products %}
+                    <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>{{ translations.product_code }}</th>
+                                        <th>{{ translations.product_name }}</th>
+                                        <th>{{ translations.category }}</th>
+                                        <th>{{ translations.quantity }} <i class="fas fa-exclamation-triangle text-warning" title="Stock bas"></i></th>
+                                        <th>{{ translations.unit }}</th>
+                                        <th>{{ translations.brand }}</th>
+                                        <th>Type d'Achat</th>
+                                        <th>Nom Fournisseur</th>
+                                        <th>Numéro BC</th>
+                                        <th>Numéro BL</th>
+                                        <th>Numéro Facture</th>
+                                        <th>Notes</th>
+                                        <th>Zone de Stockage</th>
+                                        <th>{{ translations.expiration_date }}</th>
+                                        <th>{{ translations.actions }}</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                                {% for product in products %}
+                                {% set qty = product[5]|int %}
+                                {% set min_qty = product[18]|int if product[18] else 0 %}
+                                {% set is_low_stock = min_qty > 0 and qty < min_qty %}
+                                {% set is_expired = product[16] and product[16] < today %}
+                                {% set is_expiring = product[16] and product[16] >= today and product[16] <= expiring_soon %}
+                                <tr class="{% if is_low_stock %}table-danger{% elif is_expired %}table-danger{% elif is_expiring %}table-warning opacity-75{% endif %}">
+                                    <td><strong>{{ product[1] }}</strong></td>
+                                    <td>{{ product[2] }}</td>
+                                    <td>{{ product[3] or '-' }}</td>
+                                    <td>
+                                        <span class="badge {% if is_low_stock %}bg-danger{% elif qty <= 10 %}bg-warning{% else %}bg-success{% endif %}">
+                                            {{ qty }}
+                                            {% if is_low_stock %}<i class="fas fa-exclamation-triangle ms-1"></i>{% endif %}
+                                        </span>
+                                        {% if min_qty > 0 %}<br><small class="text-muted">Min: {{ min_qty }}</small>{% endif %}
+                                    </td>
+                                    <td>{{ product[4] or '-' }}</td>
+                                    <td>{{ product[6] or '-' }}</td>
+                                    
+                                    <!-- Type d'Achat -->
+                                    <td>{{ product[15] or '-' }}</td>
+                                    
+                                    <!-- Nom Fournisseur -->
+                                    <td>{{ product[11] or '-' }}</td>
+                                    
+                                    <!-- Numéro BC -->
+                                    <td>{{ product[12] or '-' }}</td>
+                                    
+                                    <!-- Numéro BL -->
+                                    <td>{{ product[13] or '-' }}</td>
+                                    
+                                    <!-- Numéro Facture -->
+                                    <td>{{ product[14] or '-' }}</td>
+                                    
+                                    <!-- Notes -->
+                                    <td><small class="text-muted">{{ product[10] or '-' }}</small></td>
+									
+									<!-- Zone de Stockage -->
+									<td>{{ product[9] or '-' }}</td>
+                                    
+                                    <!-- Expiration Date -->
+                                    <td>
+                                        {% if product[16] %}
+                                            {% if is_expired %}
+                                                <span class="badge bg-danger">{{ product[16] }}</span>
+                                            {% elif is_expiring %}
+                                                <span class="badge bg-warning">{{ product[16] }}</span>
+                                            {% else %}
+                                                {{ product[16] }}
+                                            {% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- Actions -->
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('product_history', product_id=product[0]) }}" class="btn btn-sm btn-outline-info" title="Historique">
+                                                <i class="fas fa-history"></i>
+                                            </a>
+                                            <a href="{{ url_for('edit_product', product_id=product[0]) }}" class="btn btn-sm btn-outline-primary" title="{{ translations.edit }}">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            {% if session.role in ['admin', 'principal_admin'] %}
+                                            <a href="{{ url_for('delete_product', product_id=product[0]) }}" 
+                                               class="btn btn-sm btn-outline-danger" 
+                                               title="{{ translations.delete }}"
+                                               onclick="return confirm('{{ translations.confirm_delete_product }}');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                        <h5>{{ translations.no_products_found }}</h5>
+                        <p class="text-muted">{{ translations.add_product }} {{ translations.or_adjust_filters }}</p>
+                        <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            {{ translations.add_product }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-center">
+            <nav>
+                <ul class="pagination">
+                    {% if page > 1 %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('products', page=page-1, category=category_filter, search=search_query, type_achat=type_achat_filter, supplier_name=supplier_name_filter, storage_zone=storage_zone_filter, brand=brand_filter, date_from=date_from, date_to=date_to) }}">«</a></li>
+                    {% endif %}
+                    {% for p in range(1, total_pages + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}"><a class="page-link" href="{{ url_for('products', page=p, category=category_filter, search=search_query, type_achat=type_achat_filter, supplier_name=supplier_name_filter, storage_zone=storage_zone_filter, brand=brand_filter, date_from=date_from, date_to=date_to) }}">{{ p }}</a></li>
+                    {% endfor %}
+                    {% if page < total_pages %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('products', page=page+1, category=category_filter, search=search_query, type_achat=type_achat_filter, supplier_name=supplier_name_filter, storage_zone=storage_zone_filter, brand=brand_filter, date_from=date_from, date_to=date_to) }}">»</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="text-center text-muted small">{{ total }} produit(s) - Page {{ page }}/{{ total_pages }}</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Set today's date for comparison
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Auto-submit form on category change
+    document.getElementById('category').addEventListener('change', function() {
+        this.form.submit();
+    });
+</script>
+{% endblock %}

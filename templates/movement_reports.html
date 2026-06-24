@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.movement_reports }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-exchange-alt me-2"></i>
+                    {{ translations.movement_reports }}
+                </h1>
+                <div>
+                    <a href="{{ url_for('export_movements_excel') }}{% if start_date or end_date or movement_type %}?start_date={{ start_date }}&end_date={{ end_date }}&movement_type={{ movement_type }}{% endif %}" class="btn btn-success me-2">
+                        <i class="fas fa-file-excel me-2"></i>
+                        {{ translations.export_to_excel }}
+                    </a>
+                    <a href="{{ url_for('reports') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        {{ translations.back_to_reports }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="start_date" class="form-label">{{ translations.start_date }}</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="end_date" class="form-label">{{ translations.end_date }}</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="movement_type" class="form-label">{{ translations.filter_by_type }}</label>
+                            <select class="form-select" id="movement_type" name="movement_type">
+                                <option value="">{{ translations.all_types }}</option>
+                                <option value="entry" {% if movement_type == 'entry' %}selected{% endif %}>{{ translations.entry }}</option>
+                                <option value="exit" {% if movement_type == 'exit' %}selected{% endif %}>{{ translations.exit }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-filter me-1"></i>
+                                {{ translations.filter }}
+                            </button>
+                            <a href="{{ url_for('movement_reports') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>
+                                {{ translations.reset }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    {% if summary %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        {{ translations.movement_summary }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for stat in summary %}
+                        <div class="col-md-4 text-center">
+                            <div class="border rounded p-3">
+                                {% if stat[0] == 'entry' %}
+                                    <i class="fas fa-arrow-up fa-2x text-success mb-2"></i>
+                                    <h5 class="text-success">{{ translations.entry }}</h5>
+                                {% else %}
+                                    <i class="fas fa-arrow-down fa-2x text-danger mb-2"></i>
+                                    <h5 class="text-danger">{{ translations.exit }}</h5>
+                                {% endif %}
+                                <p class="mb-1"><strong>{{ stat[1] }}</strong> mouvements</p>
+                                <p class="text-muted mb-0">{{ stat[2] }} unités</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if summary|length == 2 %}
+                        <div class="col-md-4 text-center">
+                            <div class="border rounded p-3">
+                                <i class="fas fa-balance-scale fa-2x text-info mb-2"></i>
+                                <h5 class="text-info">{{ translations.net_movement }}</h5>
+                                {% set entries = summary|selectattr('0', 'equalto', 'entry')|first %}
+                                {% set exits = summary|selectattr('0', 'equalto', 'exit')|first %}
+                                {% set net = (entries[2] if entries else 0) - (exits[2] if exits else 0) %}
+                                <p class="mb-1"><strong class="{% if net > 0 %}text-success{% elif net < 0 %}text-danger{% else %}text-muted{% endif %}">{{ net }}</strong></p>
+                                <p class="text-muted mb-0">unités</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Movements Report Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-table me-2"></i>
+                        Rapport des mouvements
+                        {% if movements %} ({{ movements|length }} mouvements){% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if movements %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>{{ translations.movement_date }}</th>
+                                    <th>{{ translations.movement_type }}</th>
+                                    <th>{{ translations.product_code }}</th>
+                                    <th>{{ translations.product_name }}</th>
+                                    <th>{{ translations.quantity }}</th>
+                                    <th>{{ translations.notes }}</th>
+                                    <th>{{ translations.user }}</th>
+                                    <th>{{ translations.supplier_name }}</th>
+                                    <th>{{ translations.type_achat }}</th>
+                                    <!-- ✅ الخانات الجديدة -->
+                                    <th>Chantier / Expédition / Réception</th>
+                                    <th>Nom du donneur d'ordre</th>
+                                    <th>Nom du magasinier</th>
+                                    <th>Nom du chauffeur</th>
+                                    <th>Matricule</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for movement in movements %}
+                                <tr>
+                                    <td>{{ moment(movement[4]).format('DD/MM/YYYY HH:mm') if movement[4] else '-' }}</td>
+                                    <td>
+                                        {% if movement[1] == 'entry' %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-arrow-up me-1"></i>
+                                                {{ translations.entry }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-arrow-down me-1"></i>
+                                                {{ translations.exit }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td><strong>{{ movement[5] }}</strong></td>
+                                    <td>{{ movement[6] }}</td>
+                                    <td><span class="badge bg-info">{{ movement[2] }}</span></td>
+                                    <td>
+                                        {% if movement[3] %}
+                                            <span class="text-truncate d-inline-block" style="max-width: 200px;" title="{{ movement[3] }}">
+                                                {{ movement[3] }}
+                                            </span>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ movement[7] }}</td>
+                                    <td>{{ movement[8] or '-' }}</td>
+                                    <td>
+                                        {% if movement[9] %}
+                                            {% if movement[9] == 'achat_par_bc' %}
+                                                <span class="badge bg-primary">{{ translations.achat_par_bc }}</span>
+                                            {% elif movement[9] == 'achat_par_caisse' %}
+                                                <span class="badge bg-warning text-dark">{{ translations.achat_par_caisse }}</span>
+                                            {% elif movement[9] == 'achat_a_regulariser' %}
+                                                <span class="badge bg-info">{{ translations.achat_a_regulariser }}</span>
+                                            {% elif movement[9] == 'transfert' %}
+                                                <span class="badge bg-secondary">{{ translations.transfert }}</span>
+                                            {% elif movement[9] == 'consommation' %}
+                                                <span class="badge bg-dark">Consommation interne</span>
+                                            {% elif movement[9] == 'perte' %}
+                                                <span class="badge bg-danger">{{ translations.perte }}</span>
+                                            {% elif movement[9] == 'vendu' %}
+                                                <span class="badge bg-success">{{ translations.vendu }}</span>
+                                            {% elif movement[9] == 'expire' %}
+                                                <span class="badge bg-secondary">{{ translations.expire }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <!-- ✅ عرض القيم الجديدة -->
+                                    <td>{{ movement[10] or '-' }}</td> <!-- chantier_exp_recep -->
+                                    <td>{{ movement[11] or '-' }}</td> <!-- nom_donneur_ordre -->
+                                    <td>{{ movement[12] or '-' }}</td> <!-- nom_magasinier -->
+                                    <td>{{ movement[13] or '-' }}</td> <!-- nom_chauffeur -->
+                                    <td>{{ movement[14] or '-' }}</td> <!-- matricule -->
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                        <h5>{{ translations.no_movements_found }}</h5>
+                        <p class="text-muted">Aucun mouvement ne correspond aux critères de recherche.</p>
+                        <a href="{{ url_for('movement_reports') }}" class="btn btn-primary">
+                            <i class="fas fa-times me-2"></i>
+                            Effacer les filtres
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Auto-submit form on movement type change
+    document.getElementById('movement_type').addEventListener('change', function() {
+        this.form.submit();
+    });
+    
+    // Set default dates if none provided
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+        
+        if (!startDate.value && !endDate.value) {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            endDate.value = today.toISOString().split('T')[0];
+            startDate.value = firstDay.toISOString().split('T')[0];
+        }
+    });
+</script>
+{% endblock %}

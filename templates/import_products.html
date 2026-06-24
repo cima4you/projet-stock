@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.import_products }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-upload me-2"></i>
+                    {{ translations.import_products }}
+                </h1>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    {{ translations.back_to_products }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Import Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-file-excel me-2"></i>
+                        {{ translations.import_from_excel }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">{{ translations.select_excel_file }} *</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".xlsx,.xls" required>
+                            <div class="form-text">{{ translations.supported_formats }}</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>
+                                {{ translations.import_products_from_excel }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ translations.excel_file_requirements }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                {{ translations.required_columns }}
+                            </h6>
+                            <p class="text-muted small">{{ translations.required_columns_desc }}</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 py-1">
+                                    <code>كود المنتج</code> / <code>Product Code</code> / <code>code</code>
+                                </li>
+                                <li class="list-group-item px-0 py-1">
+                                    <code>اسم المنتج</code> / <code>Product Name</code> / <code>name</code>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6 class="text-info">
+                                <i class="fas fa-plus-circle me-1"></i>
+                                {{ translations.optional_columns }}
+                            </h6>
+                            <p class="text-muted small">{{ translations.optional_columns_desc }}</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 py-1">
+                                    <code>{{ translations.category }}</code>
+                                </li>
+                                <li class="list-group-item px-0 py-1">
+                                    <code>{{ translations.unit }}</code>
+                                </li>
+                                <li class="list-group-item px-0 py-1">
+                                    <code>{{ translations.quantity }}</code>
+                                </li>
+                                <li class="list-group-item px-0 py-1">
+                                    <code>{{ translations.brand }}</code>
+                                </li>
+                                <li class="list-group-item px-0 py-1">
+                                    <code>{{ translations.expiration_date }}</code>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Instructions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list-ol me-2"></i>
+                        {{ translations.import_instructions }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-globe me-1"></i>
+                            {{ translations.column_names_support }}
+                        </h6>
+                        <p class="mb-0">{{ translations.column_names_support_desc }}</p>
+                    </div>
+                    
+                    <ol class="list-group list-group-numbered">
+                        <li class="list-group-item">{{ translations.import_instructions_1 }}</li>
+                        <li class="list-group-item">{{ translations.import_instructions_2 }}</li>
+                        <li class="list-group-item">{{ translations.import_instructions_3 }}</li>
+                        <li class="list-group-item">{{ translations.import_instructions_4 }}</li>
+                        <li class="list-group-item">{{ translations.import_instructions_5 }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

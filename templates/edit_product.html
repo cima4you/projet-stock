@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}{{ translations.edit_product }} - {{ translations.stock_management_system }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">
+                    <i class="fas fa-edit me-2"></i>
+                    {{ translations.edit_product }}
+                </h1>
+                <a href="{{ url_for('products') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    {{ translations.back }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <!-- Basic Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Informations de base
+                                </h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="code" class="form-label">{{ translations.product_code }} *</label>
+                                    <input type="text" class="form-control" id="code" name="code" value="{{ product[1] }}" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">{{ translations.product_name }} *</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ product[2] }}" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">{{ translations.category }}</label>
+                                    <input type="text" class="form-control" id="category" name="category" list="categoryList" value="{{ product[3] or '' }}" placeholder="Sélectionner ou saisir...">
+                                    <datalist id="categoryList">
+                                        {% for cat in all_categories %}
+                                        <option value="{{ cat }}">
+                                        {% endfor %}
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="unit" class="form-label">{{ translations.unit }}</label>
+                                    <input type="text" class="form-control" id="unit" name="unit" value="{{ product[4] or '' }}" list="unitList">
+                                    <datalist id="unitList">
+                                        <option value="Pièce">
+                                        <option value="Kilogramme">
+                                        <option value="Litre">
+                                        <option value="Mètre">
+                                        <option value="Boîte">
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="quantity" class="form-label">{{ translations.quantity }}</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" value="{{ product[5] }}" readonly>
+                                    <div class="form-text">Modifiez la quantité via les mouvements de stock</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="brand" class="form-label">{{ translations.brand }}</label>
+                                    <input type="text" class="form-control" id="brand" name="brand" value="{{ product[6] or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="min_quantity" class="form-label">Seuil d'alerte stock</label>
+                                    <input type="number" class="form-control" id="min_quantity" name="min_quantity" min="0" value="{{ product[18] or 0 }}">
+                                    <div class="form-text">Quantité minimale avant alerte</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="expiration_date" class="form-label">{{ translations.expiration_date }}</label>
+                                    <input type="date" class="form-control" id="expiration_date" name="expiration_date" value="{{ product[16] or '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Additional Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-clipboard me-2"></i>
+                                    Informations supplémentaires
+                                </h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="condition_status" class="form-label">{{ translations.condition }}</label>
+                                    <select class="form-select" id="condition_status" name="condition_status">
+                                        <option value="">Sélectionner...</option>
+                                        <option value="Neuf" {% if product[7] == 'Neuf' %}selected{% endif %}>Neuf</option>
+                                        <option value="Bon état" {% if product[7] == 'Bon état' %}selected{% endif %}>Bon état</option>
+                                        <option value="Usagé" {% if product[7] == 'Usagé' %}selected{% endif %}>Usagé</option>
+                                        <option value="À réparer" {% if product[7] == 'À réparer' %}selected{% endif %}>À réparer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="chanter" class="form-label">{{ translations.chanter }}</label>
+                                    <input type="text" class="form-control" id="chanter" name="chanter" value="{{ product[8] or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="storage_zone" class="form-label">{{ translations.storage_zone }}</label>
+                                    <input type="text" class="form-control" id="storage_zone" name="storage_zone" value="{{ product[9] or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="notes" class="form-label">{{ translations.notes }}</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3">{{ product[10] or '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Supplier Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-truck me-2"></i>
+                                    {{ translations.supplier_info }}
+                                </h5>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="supplier_name" class="form-label">{{ translations.supplier_name }}</label>
+                                    <input type="text" class="form-control" id="supplier_name" name="supplier_name" list="supplierList" value="{{ product[11] or '' }}" placeholder="Sélectionner ou saisir...">
+                                    <datalist id="supplierList">
+                                        {% for s in all_suppliers %}
+                                        <option value="{{ s }}">
+                                        {% endfor %}
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="type_achat" class="form-label">{{ translations.type_achat }}</label>
+                                    <select class="form-select" id="type_achat" name="type_achat">
+                                        <option value="">{{ translations.select_purchase_type }}</option>
+                                        <option value="achat_par_bc" {% if product[15] == 'achat_par_bc' %}selected{% endif %}>{{ translations.achat_par_bc }}</option>
+                                        <option value="achat_par_caisse" {% if product[15] == 'achat_par_caisse' %}selected{% endif %}>{{ translations.achat_par_caisse }}</option>
+                                        <option value="achat_a_regulariser" {% if product[15] == 'achat_a_regulariser' %}selected{% endif %}>{{ translations.achat_a_regulariser }}</option>
+                                        <option value="transfert" {% if product[15] == 'transfert' %}selected{% endif %}>{{ translations.transfert }}</option>
+                                        <option value="consommation" {% if product[15] == 'consommation' %}selected{% endif %}>Consommation interne</option>
+                                        <option value="perte" {% if product[15] == 'perte' %}selected{% endif %}>{{ translations.perte }}</option>
+                                        <option value="vendu" {% if product[15] == 'vendu' %}selected{% endif %}>{{ translations.vendu }}</option>
+                                        <option value="expire" {% if product[15] == 'expire' %}selected{% endif %}>{{ translations.expire }}</option>
+                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="bc_number" class="form-label">{{ translations.bc_number }}</label>
+                                    <input type="text" class="form-control" id="bc_number" name="bc_number" value="{{ product[12] or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="bl_number" class="form-label">{{ translations.bl_number }}</label>
+                                    <input type="text" class="form-control" id="bl_number" name="bl_number" value="{{ product[13] or '' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="n_facture" class="form-label">{{ translations.n_facture }}</label>
+                                    <input type="text" class="form-control" id="n_facture" name="n_facture" value="{{ product[14] or '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('products') }}" class="btn btn-secondary me-md-2">
+                                {{ translations.cancel }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {{ translations.save }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

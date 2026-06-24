@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="text-primary">{{ translations['dashboard'] }}</h2>
+            <p>{{ translations['welcome'] }}, {{ session.username }}!</p>
+        </div>
+    </div>
+
+    <!-- Widgets Alertes (1ère rangée) -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{{ url_for('products') }}" class="text-decoration-none">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    {{ translations['total_products'] }}
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_products }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{{ url_for('products') }}" class="text-decoration-none">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    {{ translations['low_stock_items'] }}
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ low_stock_items }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{{ url_for('products') }}" class="text-decoration-none">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    {{ translations['expired_products_count'] }}
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ expired_count }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-skull-crossbones fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{{ url_for('products') }}" class="text-decoration-none">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    {{ translations['expiring_soon_count'] }}
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ expiring_count }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clock fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 2ème rangée: Entrées / Sorties / Stock Zéro -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                {{ translations['total_entries'] }}
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_entries }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-arrow-down fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                {{ translations['total_exits'] }}
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_exits }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-arrow-up fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                {{ translations['zero_stock_count'] }}
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ zero_stock_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Mouvements (30 jours)</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="movementsChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-5 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Par Catégorie</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Charts Row -->
+    <div class="row mb-4">
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">Top 10 Produits les plus sortis</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="topMovedChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Top 10 Fournisseurs</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="topSuppChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Produits en stock faible -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-warning">
+                        {{ translations['low_stock_products'] }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if low_stock_products %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{ translations['product_code'] }}</th>
+                                    <th>{{ translations['product_name'] }}</th>
+                                    <th>{{ translations['quantity'] }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in low_stock_products %}
+                                <tr>
+                                    <td>{{ product[0] }}</td>
+                                    <td>{{ product[1] }}</td>
+                                    <td><span class="text-danger font-weight-bold">{{ product[2] }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">{{ translations['no_low_stock_products'] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Mouvements récents -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-info">
+                        {{ translations['recent_movements'] }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if recent_movements %}
+                    <ul class="list-group list-group-flush">
+                        {% for movement in recent_movements %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ movement[4] }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ moment(movement[3]).fromNow() }} | {{ movement[5] }}
+                                </small>
+                            </div>
+                            <span class="badge badge-{{ 'success' if movement[0] == 'entry' else 'danger' }} badge-pill">
+                                {{ movement[1] }} ({{ 'Entrée' if movement[0] == 'entry' else 'Sortie' }})
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">{{ translations['no_recent_movements'] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Produits expirant bientôt -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-orange">
+                        {{ translations['expiring_soon'] }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if expiring_products %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{ translations['product_code'] }}</th>
+                                    <th>{{ translations['product_name'] }}</th>
+                                    <th>{{ translations['expiration_date'] }}</th>
+                                    <th>{{ translations['days_remaining'] }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in expiring_products %}
+                                <tr>
+                                    <td>{{ product.code }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.expiration_date }}</td>
+                                    <td>
+                                        {% if product.days_until_expiry <= 0 %}
+                                        <span class="text-danger font-weight-bold">منتهٍ</span>
+                                        {% elif product.days_until_expiry <= 7 %}
+                                        <span class="text-warning font-weight-bold">{{ product.days_until_expiry }} يوم</span>
+                                        {% else %}
+                                        <span class="text-success">{{ product.days_until_expiry }} يوم</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">{{ translations['no_expiring_products'] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Produits expirés -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-danger">
+                        {{ translations['expired_products'] }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if expired_products %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>{{ translations['product_code'] }}</th>
+                                    <th>{{ translations['product_name'] }}</th>
+                                    <th>{{ translations['expiration_date'] }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in expired_products %}
+                                <tr>
+                                    <td>{{ product[0] }}</td>
+                                    <td>{{ product[1] }}</td>
+                                    <td><span class="text-danger font-weight-bold">{{ product[2] }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">{{ translations['no_expired_products'] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    var ctx1 = document.getElementById('movementsChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels | safe }},
+            datasets: [
+                {
+                    label: 'Entrées',
+                    data: {{ chart_entries | safe }},
+                    backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Sorties',
+                    data: {{ chart_exits | safe }},
+                    backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                    borderColor: 'rgba(220, 53, 69, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    var ctxTop = document.getElementById('topMovedChart').getContext('2d');
+    new Chart(ctxTop, {
+        type: 'bar',
+        data: {
+            labels: {{ top_moved_labels | safe }},
+            datasets: [{ label: 'Sorties', data: {{ top_moved_data | safe }}, backgroundColor: '#e74a3b' }]
+        },
+        options: responsiveChartOptions('Produits')
+    });
+
+    var ctxSupp = document.getElementById('topSuppChart').getContext('2d');
+    new Chart(ctxSupp, {
+        type: 'bar',
+        data: {
+            labels: {{ top_supp_labels | safe }},
+            datasets: [{ label: 'Produits', data: {{ top_supp_data | safe }}, backgroundColor: '#1cc88a' }]
+        },
+        options: responsiveChartOptions('Fournisseurs')
+    });
+
+    function responsiveChartOptions(title) {
+        return {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: { legend: { display: false }, title: { display: false } },
+            scales: { x: { beginAtZero: true } }
+        };
+    }
+
+    var ctx2 = document.getElementById('categoryChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: {{ cat_labels | safe }},
+            datasets: [{
+                data: {{ cat_counts | safe }},
+                backgroundColor: [
+                    '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                    '#5a5c69', '#858796', '#b004b9', '#f72585', '#4cc9f0'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+{% endblock %}

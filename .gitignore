@@ -1,0 +1,38 @@
+# Environment (real secrets - local only)
+.env
+.env.salt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Database
+stock.db
+*.db
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Static logos (generated)
+static/logos/*
+!static/logos/.gitkeep
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Replit specific
+.replit
+replit.md
+.local/
+
+# Temp files
+nouveau *.txt

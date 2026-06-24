@@ -1,0 +1,33 @@
+خطوات التشفير وفك التشفير
+1. تشفير .env (مرة واحدة)
+cd D:\Users\DT01\Desktop\apk\projet_stock
+python protect_env.py encrypt 123456
+النتيجة: يتم إنشاء ملفين:
+
+.env.encrypted ← الملف المشفر
+.env.salt ← مفتاح إضافي ضروري لفك التشفير
+2. حذف الملف الأصلي (لإخفاء البيانات)
+del .env
+الآن الملف الأصلي غير موجود على القرص، والبيانات مشفرة بالكامل.
+
+3. تشغيل التطبيق (يقرأ المشفر تلقائياً)
+$env:ENV_PASSWORD="123456"
+python main.py
+أو بدون متغير نظام (سيطلب كلمة السر يدوياً):
+
+python main.py
+4. فك التشفير (لرؤية الملف الأصلي)
+python protect_env.py decrypt 123456
+النتيجة: يتم استرجاع .env كنص عادي.
+
+5. إعادة التشفير بعد فك التشفير
+python protect_env.py encrypt 123456
+ثم احذف .env مرة أخرى:
+
+del .env
+ملخص سريع
+العملية	الأمر
+تشفير	python protect_env.py encrypt كلمة_السر
+فك تشفير	python protect_env.py decrypt كلمة_السر
+تشغيل التطبيق	$env:ENV_PASSWORD="كلمة_السر" ثم python main.py
+تغيير كلمة السر	فك التشفير أولاً ثم شفر بكلمة جديدة
